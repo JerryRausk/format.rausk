@@ -49,7 +49,7 @@
     const input = document.getElementById("input");
     /** @type {HTMLInputElement} */
     const output = document.getElementById("output");
-    input.addEventListener("input", () => {
+    function tryParse() {
         try {
             const asObj = JSON.parse(input.value)
             const converterFunc = getConverter(converter.value)
@@ -58,7 +58,9 @@
             output.value = "Not valid json...";
             return;
         }
-    })
+    }
+    input.addEventListener("input", tryParse);
+    converter.addEventListener("change", tryParse);
 </script>
 <style>
     div {
