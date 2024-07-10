@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Format</title>
+</head>
+<body>
+    <div class="header">
+        <label for="convert">
+            Convert to
+        </label>
+        <select id="convert">
+            <option value="1">JSObject</option>
+            <option value="2">Pretty JSON</option>
+        </select>
+    </div>
+<div class="main">
+    <div>
+        <h2>Input</h2>
+        <textarea spellcheck="false" id="input" type="text" rows="24"> </textarea>
+    </div>
+    <div>
+        <h2>Output</h2>
+        <textarea spellcheck="false" id="output" readonly type="text" rows="24"></textarea>
+    </div>
+    </div>
+    </body>
+</html>
+<script>
+    const JSObjectConverter = (obj) => {
+        var cleaned = JSON.stringify(obj, null, 2);
+
+        const res = cleaned.replace(/^[\t ]*"[^:\n\r]+(?<!\\)":/gm, function (match) {
+            return match.replace(/"/g, "");
+        });
+        return res;
+    }
+    const PrettyJSONConverter = (obj) => {
+        return JSON.stringify(obj, null, 2);
+    }
+    function getConverter(converter) {
+        if(converter==="2") return PrettyJSONConverter; 
+        return JSObjectConverter;
+    }
+    /** @type {HTMLSelectElement} */
+    const converter = document.getElementById("convert")
+    /** @type {HTMLInputElement} */
+    const input = document.getElementById("input");
+    /** @type {HTMLInputElement} */
+    const output = document.getElementById("output");
+    input.addEventListener("input", () => {
+        try {
+            const asObj = JSON.parse(input.value)
+            const converterFunc = getConverter(converter.value)
+            output.value = converterFunc(asObj);
+        } catch {
+            output.value = "Not valid json...";
+            return;
+        }
+    })
+</script>
+<style>
+    div {
+        display: flex;
+    }
+    .main > div {
+        flex-direction: column;
+        width: 40%;
+    }
+    .main > div > h2 {
+        margin-bottom: 4px;
+        text-align: center;
+    }
+    .main {
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+    }
+    .header {
+        justify-content: center;
+        padding-top:12px;
+    }
+    .header label {
+        margin-right: 8px;
+    }
+    textarea {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-size: medium;
+        border-radius: 4px;
+        background-color: #242424;
+        color: white;
+    }
+    select {
+        background-color: #242424;
+        color: white;
+    }
+    body {
+  background-color: #121212;
+  color: white;
+}
+
+</style>
